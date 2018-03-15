@@ -16,7 +16,16 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ListBox Grid.Column="0" Grid.Row="0" ItemsSource="{Binding BirdSource}">
+        <!--
+        By simply specifying the ItemSource to be the List<Bird> in the ViewModel, the ListBox is populated with a bunch of entries
+        that say BirdMVVM.Bird - the project and the object within the list. In order to correctly display the contents of the List<Bird>,
+        an ItemTemplate and an accompanying DataTempate must be made. The ItemSource for the ListBox remains unchanged, but the ListBox
+        gains an ItemTemplate. In the ItemTemplate, we specify a DataTemplate that will represent what we want displayed in the ListBox.
+        
+        For the needs of the ListBox, we place a TextBlock in the DataTemplate, and create a binding to the Name property in the Bird object
+        as the contents of the TextBlock. WPF will take care of everything else.        
+        -->
+        <ListBox x:Name="BirdList" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding BirdSource}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Path = Name}"/>
@@ -24,6 +33,18 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Image Grid.Column="1" Grid.Row="0"></Image>
+        <!--
+        Another great thing about WPF data binding is that if we have a control that is utilizing a collection of elements, such as objects,
+        other controls are able to use it for other bindings. The ListBox has a SelectedItem property that can be used as a binding path. If
+        we give the ListBox a name, we can access the List<Bird> that it is populated with. Once done, we can specify the selected item's property
+        as the path for the Source binding for the Image control.
+        
+        "Since the selected item property of the listbox is a dependency property that will just work when changing the selection in the listbox"
+        - Insire from C# Discord
+        
+        The ElementName is the name of the control that uses the collection for population.
+        http://www.blackwasp.co.uk/WPFBindToControl.aspx
+        -->
+        <Image x:Name="BirdImg" Source="{Binding ElementName=BirdList, Path=SelectedItem.Url}" Grid.Column="1" Grid.Row="0"></Image>
     </Grid>
 </Window>
